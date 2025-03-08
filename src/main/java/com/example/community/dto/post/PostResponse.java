@@ -38,7 +38,7 @@ public class PostResponse {
                 .updatedAt(post.getUpdatedAt())
                 .content(post.getContent())
                 .imageUrl(post.getImageUrl())
-                .isMine(Objects.equals(post.getId(), currentUserId))
+                .isMine(Objects.equals(post.getUser().getId(), currentUserId))
                 .user(UserResponse.fromEntity(post.getUser()))
                 .build();
     }
