@@ -18,6 +18,10 @@ public enum ErrorCode {
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "잘못된 패스워드 형식입니다."),
     WRONG_LOGIN_INFO(HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 잘못되었습니다."),
 
+    // post
+    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 게시글이 없습니다."),
+    FORBIDDEN_POST_ACCESS(HttpStatus.FORBIDDEN, "본인의 게시글만 수정/삭제할 수 있습니다.")
+
 
     ;
     private final HttpStatus status;

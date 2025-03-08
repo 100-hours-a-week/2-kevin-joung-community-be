@@ -1,15 +1,14 @@
 package com.example.community.controller;
 
 import com.example.community.dto.BaseResponse;
-import com.example.community.dto.PostListResponse;
+import com.example.community.dto.post.PostFormRequest;
+import com.example.community.dto.post.PostListResponse;
+import com.example.community.dto.post.PostResponse;
 import com.example.community.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -29,8 +28,37 @@ public class PostController {
         );
         return ResponseEntity
                 .status(HttpStatus.OK)
-
                 .body(response);
+    }
+
+    // 게시물 작성 API
+    @PostMapping("")
+    public ResponseEntity<BaseResponse<Void>> createPost(@RequestBody PostFormRequest request) {
+        postService.createPost(request);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(BaseResponse.of("게시물 작성 성공"));
+    }
+
+    // 게시물 수정 API
+    @PutMapping("/{id}")
+    public ResponseEntity<BaseResponse<Void>> updatePost(
+            @PathVariable Long id,
+            @RequestBody PostFormRequest request
+    ) {
+        postService.updatePost(id, request);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(BaseResponse.of("게시물 수정 성공"));
+    }
+
+    // 게시글 삭제 API
+    @DeleteMapping("/{id}")
+    public ResponseEntity<BaseResponse<Void>> deletePost(@PathVariable Long id) {
+        postService.deletePost(id);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(BaseResponse.of("게시물 삭제 성공"));
     }
 
 }

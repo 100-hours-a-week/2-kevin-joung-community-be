@@ -1,4 +1,4 @@
-package com.example.community.dto;
+package com.example.community.dto.post;
 
 import com.example.community.dto.user.UserResponse;
 import com.example.community.entity.Post;

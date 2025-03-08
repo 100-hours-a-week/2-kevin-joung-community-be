@@ -38,4 +38,10 @@ public class Post extends BaseEntity {
 
     @Column(nullable = false, columnDefinition = "INT DEFAULT 0 COMMENT '캐싱'")
     private int commentCount;
+
+    public void update(String title, String content, String imageUrl) {
+        this.title = title;
+        this.content = content;
+        this.imageUrl = imageUrl;
+    }
 }
