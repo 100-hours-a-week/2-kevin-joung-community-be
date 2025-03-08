@@ -19,7 +19,8 @@ public class GlobalExceptionHandler {
 
     // 서버 내부 오류(500)
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<BaseResponse<Void>> handleServerError(JwtException e) {
+    public ResponseEntity<BaseResponse<Void>> handleServerError(Exception e) {
+        System.out.println("‼️에러 발생: " + e.getMessage());
         return ResponseEntity.status(ErrorCode.SERVER_ERROR.getStatus())
                 .body(BaseResponse.of(ErrorCode.SERVER_ERROR.getMessage()));
     }

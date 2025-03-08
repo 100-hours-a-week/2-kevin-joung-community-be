@@ -16,7 +16,7 @@ public class UserController {
     private final UserService userService;
 
     // 회원가입 API
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<BaseResponse<Void>> register(@RequestBody UserRegisterRequest request) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
