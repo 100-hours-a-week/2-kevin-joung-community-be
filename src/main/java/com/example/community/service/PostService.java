@@ -26,21 +26,16 @@ public class PostService {
     }
 
     // 게시글 목록 조회
-    public BaseResponse<PostListResponse> getPosts(Long cursor, int limit) {
+    public PostListResponse getPosts(Long cursor, int limit) {
         User user = getCurrentUser();
         List<Post> posts = postRepository.findPostsByCursor(cursor, limit);
         List<PostResponse> postResponseList = posts.stream()
                 .map(post -> PostResponse.fromEntity(post, user.getId()))
                 .toList();
 
-        PostListResponse response = PostListResponse.builder()
+        return PostListResponse.builder()
                 .posts(postResponseList)
                 .build();
-        return BaseResponse.of(
-                "조회 성공",
-                response
-        );
-
     }
 
 }

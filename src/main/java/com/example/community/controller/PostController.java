@@ -23,9 +23,14 @@ public class PostController {
             @RequestParam(required = false) Long cursor,
             @RequestParam(defaultValue = "10") int limit
     ) {
+        BaseResponse<PostListResponse> response = BaseResponse.of(
+                "조회 성공",
+                postService.getPosts(cursor, limit)
+        );
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(postService.getPosts(cursor, limit));
+
+                .body(response);
     }
 
 }

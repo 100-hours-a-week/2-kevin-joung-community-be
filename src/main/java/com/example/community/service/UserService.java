@@ -28,7 +28,7 @@ public class UserService {
     }
 
     // 회원가입
-    public BaseResponse<Void> register(UserRegisterRequest request) {
+    public void register(UserRegisterRequest request) {
         // 요첨 값 검증
         validateEmail(request.getEmail());
         validateNickname(request.getNickname());
@@ -53,11 +53,10 @@ public class UserService {
                 .build();
 
         userRepository.save(newUser);
-        return BaseResponse.of("회원가입 성공");
     }
 
     // 로그인 (Access Token, Refresh Token 발급)
-    public BaseResponse<TokenResponse> login(UserLoginRequest request) {
+    public TokenResponse login(UserLoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new APIException(ErrorCode.WRONG_LOGIN_INFO)); // 이메일이 없다면
 
@@ -66,16 +65,14 @@ public class UserService {
             throw new APIException(ErrorCode.WRONG_LOGIN_INFO);
         }
 
-        TokenResponse tokenResponse = TokenResponse.builder()
+        return TokenResponse.builder()
                 .accessToken(jwtUtil.generateAccessToken(user.getId()))
                 .refreshToken(jwtUtil.generateRefreshToken(user.getId()))
                 .build();
-
-        return BaseResponse.of("로그인 성공", tokenResponse);
     }
 
     // 토큰 재발급 (Access Token, Refresh Token 재발급)
-    public BaseResponse<TokenResponse> refreshAccessToken(UserRefreshTokenRequest request) {
+    public TokenResponse refreshAccessToken(UserRefreshTokenRequest request) {
         // 리프레시 토큰 만료됐는지 검증
         if (!jwtUtil.validateToken(request.getRefreshToken())) {
             throw new APIException(ErrorCode.INVALID_TOKEN);
@@ -87,23 +84,20 @@ public class UserService {
             throw new APIException(ErrorCode.INVALID_TOKEN);
         }
 
-        TokenResponse tokenResponse = TokenResponse.builder()
+        return TokenResponse.builder()
                 .accessToken(jwtUtil.generateAccessToken(userId))
                 .refreshToken(jwtUtil.generateRefreshToken(userId))
                 .build();
-
-        return BaseResponse.of("토큰 재발급 성공", tokenResponse);
     }
 
     // 내 정보 조회
-    public BaseResponse<UserResponse> getMyInfo() {
+    public UserResponse getMyInfo() {
         User user = getCurrentUser();
-        UserResponse userResponse = UserResponse.fromEntity(user);
-        return BaseResponse.of("내 정보 조회 성공", userResponse);
+        return UserResponse.fromEntity(user);
     }
 
     // 회원 정보 수정 (닉네임, 프로필 이미지 변경)
-    public BaseResponse<Void> updateUserInfo(UserUpdateInfoRequest request) {
+    public void updateUserInfo(UserUpdateInfoRequest request) {
         User user = getCurrentUser();
         String nickname = request.getNickname();
         String profileImageUrl = request.getProfileImageUrl();
@@ -126,11 +120,10 @@ public class UserService {
                 .build();
 
         userRepository.save(user);
-        return BaseResponse.of("회원 정보 수정 성공");
     }
 
     // 비밀번호 변경
-    public BaseResponse<Void> updatePassword(UserUpdatePasswordRequest request) {
+    public void updatePassword(UserUpdatePasswordRequest request) {
         User user = getCurrentUser();
 
         validatePassword(request.getPassword());
@@ -144,7 +137,6 @@ public class UserService {
                 .build();
 
         userRepository.save(user);
-        return BaseResponse.of( "비밀번호 변경 성공");
     }
 
     // 이메일 검증
