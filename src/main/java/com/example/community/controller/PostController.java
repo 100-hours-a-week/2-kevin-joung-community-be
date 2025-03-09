@@ -74,4 +74,17 @@ public class PostController {
                 .body(BaseResponse.of("게시물 삭제 성공"));
     }
 
+    // 게시글 좋아요 토글 API
+    @PostMapping("/{id}/likes")
+    public ResponseEntity<BaseResponse<Boolean>> likePost(@PathVariable Long id) {
+        Boolean result = postService.toggleLike(id);
+        BaseResponse<Boolean> response = BaseResponse.of(
+                result ? "좋아요 누르기 성공": "좋아요 취소 성공",
+                result
+        );
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+    }
+
 }

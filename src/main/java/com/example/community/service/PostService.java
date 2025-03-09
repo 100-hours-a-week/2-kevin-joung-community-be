@@ -4,9 +4,11 @@ import com.example.community.dto.post.PostFormRequest;
 import com.example.community.dto.post.PostListResponse;
 import com.example.community.dto.post.PostResponse;
 import com.example.community.entity.Post;
+import com.example.community.entity.PostLike;
 import com.example.community.entity.User;
 import com.example.community.exception.APIException;
 import com.example.community.exception.ErrorCode;
+import com.example.community.repository.LikeRepository;
 import com.example.community.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.example.community.security.JwtUtil.getCurrentUser;
 
@@ -22,6 +25,7 @@ import static com.example.community.security.JwtUtil.getCurrentUser;
 @Transactional
 public class PostService {
     private final PostRepository postRepository;
+    private final LikeRepository likeRepository;
 
     // 게시글 목록 조회
     public PostListResponse getPosts(Long cursor, int limit) {
@@ -91,4 +95,30 @@ public class PostService {
         postRepository.deleteById(id);
     }
 
+    // 게시글 좋아요 토글
+    public Boolean toggleLike(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new APIException(ErrorCode.POST_NOT_FOUND));
+
+        User user = getCurrentUser();
+
+        Optional<PostLike> existingLike = likeRepository.findByPostAndUser(post, user);
+
+        if (existingLike.isPresent()) {
+            likeRepository.delete(existingLike.get());
+            post.decreaseLikeCount();
+            postRepository.save(post);
+            return false;
+        } else {
+            PostLike postLike = PostLike.builder()
+                    .post(post)
+                    .user(user)
+                    .build();
+
+            likeRepository.save(postLike);
+            post.increaseLikeCount();
+            postRepository.save(post);
+            return true;
+        }
+    }
 }

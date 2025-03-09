@@ -53,14 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         }
-
-        if ("POST".equalsIgnoreCase(request.getMethod()) || "PUT".equalsIgnoreCase(request.getMethod())) {
-            if (request.getContentLength() == 0) {
-                handleException(response, ErrorCode.INVALID_REQUEST);
-                return;
-            }
-        }
-
+        
         chain.doFilter(request, response);
 
     }
