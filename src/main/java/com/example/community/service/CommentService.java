@@ -11,12 +11,13 @@ import com.example.community.exception.ErrorCode;
 import com.example.community.repository.CommentRepository;
 import com.example.community.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+
+import static com.example.community.security.JwtUtil.getCurrentUser;
 
 @Service
 @RequiredArgsConstructor
@@ -24,11 +25,6 @@ import java.util.Objects;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
-
-    // 현재 로그인된 사용자 정보 가져오기
-    private User getCurrentUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
 
     // 댓글 목록 조회
     public CommentListResponse getComments(Long postId, Long cursor, int limit) {

@@ -1,9 +1,11 @@
 package com.example.community.security;
 
+import com.example.community.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -69,5 +71,10 @@ public class JwtUtil {
         } catch (JwtException e) {
             return false;
         }
+    }
+
+    // 현재 로그인된 사용자 정보 가져오기
+    public static User getCurrentUser() {
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

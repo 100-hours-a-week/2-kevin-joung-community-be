@@ -1,6 +1,5 @@
 package com.example.community.service;
 
-import com.example.community.dto.BaseResponse;
 import com.example.community.dto.user.*;
 import com.example.community.entity.User;
 import com.example.community.exception.APIException;
@@ -8,10 +7,11 @@ import com.example.community.exception.ErrorCode;
 import com.example.community.repository.UserRepository;
 import com.example.community.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.example.community.security.JwtUtil.getCurrentUser;
 
 @Service
 @RequiredArgsConstructor
@@ -21,11 +21,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-
-    // 현재 로그인된 사용자 정보 가져오기
-    private User getCurrentUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
 
     // 회원가입
     public void register(UserRegisterRequest request) {

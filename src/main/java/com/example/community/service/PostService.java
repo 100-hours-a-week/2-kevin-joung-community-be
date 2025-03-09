@@ -9,23 +9,19 @@ import com.example.community.exception.APIException;
 import com.example.community.exception.ErrorCode;
 import com.example.community.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
 
+import static com.example.community.security.JwtUtil.getCurrentUser;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class PostService {
     private final PostRepository postRepository;
-
-    // 현재 로그인된 사용자 정보 가져오기
-    private User getCurrentUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
 
     // 게시글 목록 조회
     public PostListResponse getPosts(Long cursor, int limit) {
