@@ -20,7 +20,11 @@ public enum ErrorCode {
 
     // post
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 게시글이 없습니다."),
-    FORBIDDEN_POST_ACCESS(HttpStatus.FORBIDDEN, "본인의 게시글만 수정/삭제할 수 있습니다.")
+    FORBIDDEN_POST_ACCESS(HttpStatus.FORBIDDEN, "본인의 게시글만 수정/삭제할 수 있습니다."),
+
+    // comment
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 댓글이 없습니다."),
+    FORBIDDEN_COMMENT_ACCESS(HttpStatus.FORBIDDEN, "본인의 댓글만 수정/삭제할 수 있습니다."),
 
 
     ;
