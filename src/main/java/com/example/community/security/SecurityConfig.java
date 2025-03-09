@@ -3,6 +3,7 @@ package com.example.community.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,7 +27,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // CSRF 보안 비활성화 (JWT 사용 시 필요 없음)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용 안 함 (Stateless)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/user/", "/api/user/token").permitAll() // 로그인, 회원가입은 인증 없이 허용
+                        .requestMatchers(HttpMethod.POST, "/api/users/token").permitAll() // 로그인 인증 X
+                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll() // 회원가입 인증 X
                         .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JWT 필터 추가

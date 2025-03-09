@@ -3,6 +3,7 @@ package com.example.community.security;
 import com.example.community.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,8 +18,16 @@ import java.util.Date;
 public class JwtUtil {
 
     private final String JWT_SECRET_KEY;
-    private static final long ACCESS_EXPIRATION_TIME = 1000 * 60 * 30;  // Access Token: 30분
-    private static final long REFRESH_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7;  // Refresh Token: 7일
+    private static final int ACCESS_EXPIRATION_TIME = 60 * 30;  // Access Token: 30분
+    private static final int REFRESH_EXPIRATION_TIME = 60 * 60 * 24 * 7;  // Refresh Token: 7일
+
+    public static int getAccessExpirationTime() {
+        return ACCESS_EXPIRATION_TIME;
+    }
+
+    public static int getRefreshExpirationTime() {
+        return REFRESH_EXPIRATION_TIME;
+    }
 
     public JwtUtil(@Value("${JWT_SECRET_KEY}") String jwtSecretKey) {
         this.JWT_SECRET_KEY = jwtSecretKey;
@@ -43,7 +52,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(userId.toString())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime * 1000))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -76,5 +85,24 @@ public class JwtUtil {
     // 현재 로그인된 사용자 정보 가져오기
     public static User getCurrentUser() {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
+    // 쿠키 생성
+    public Cookie createTokenCookie(String name, String token, int maxAge) {
+        Cookie cookie = new Cookie(name, token);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(maxAge);
+        return cookie;
+    }
+    // 쿠키 제거
+    public Cookie deleteTokenCookie(String name) {
+        Cookie cookie = new Cookie(name, null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0); // 즉시 만료
+        return cookie;
     }
 }

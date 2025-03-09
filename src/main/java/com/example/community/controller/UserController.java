@@ -2,17 +2,19 @@ package com.example.community.controller;
 
 import com.example.community.dto.BaseResponse;
 import com.example.community.dto.user.*;
+import com.example.community.security.JwtUtil;
 import com.example.community.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
-
+    private final JwtUtil jwtUtil;
     private final UserService userService;
 
     // 회원가입 API
@@ -27,28 +29,39 @@ public class UserController {
 
     // 로그인 API
     @PostMapping("/token")
-    public ResponseEntity<BaseResponse<TokenResponse>> login(@RequestBody UserLoginRequest request) {
-        BaseResponse<TokenResponse> response = BaseResponse.of(
-                "로그인 성공",
-                userService.login(request)
-        );
+    public ResponseEntity<BaseResponse<Void>> login(@RequestBody UserLoginRequest request, HttpServletResponse response) {
+        TokenResponse tokens = userService.login(request);
+
+        response.addCookie(jwtUtil.createTokenCookie("accessToken", tokens.getAccessToken(), JwtUtil.getAccessExpirationTime()));
+        response.addCookie(jwtUtil.createTokenCookie("refreshToken", tokens.getRefreshToken(), JwtUtil.getRefreshExpirationTime()));
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(response);
+                .body(BaseResponse.of("로그인 성공"));
+    }
+
+    // 로그아웃 API
+    @DeleteMapping("/token")
+    public ResponseEntity<BaseResponse<Void>> logout(HttpServletResponse response) {
+        response.addCookie(jwtUtil.deleteTokenCookie("accessToken"));
+        response.addCookie(jwtUtil.deleteTokenCookie("refreshToken"));
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(BaseResponse.of("로그아웃 성공"));
     }
 
     // 토큰 재발급 API
-    @PutMapping("/token")
-    public ResponseEntity<BaseResponse<TokenResponse>> refreshAccessToken(@RequestBody UserRefreshTokenRequest request) {
-        BaseResponse<TokenResponse> response = BaseResponse.of(
-                "토큰 재발급 성공",
-                userService.refreshAccessToken(request)
-        );
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(response);
-    }
+//    @PutMapping("/token")
+//    public ResponseEntity<BaseResponse<TokenResponse>> refreshAccessToken(@RequestBody UserRefreshTokenRequest request) {
+//        BaseResponse<TokenResponse> response = BaseResponse.of(
+//                "토큰 재발급 성공",
+//                userService.refreshAccessToken(request)
+//        );
+//        return ResponseEntity
+//                .status(HttpStatus.OK)
+//                .body(response);
+//    }
 
     // 내 정보 조회 API
     @GetMapping("/me")
