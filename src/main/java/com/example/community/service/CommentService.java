@@ -55,6 +55,10 @@ public class CommentService {
                 .content(request.getContent())
                 .build();
         commentRepository.save(newComment);
+
+        // 댓글 작성 시 게시글 commentCount+
+        post.increaseCommentCount();
+        postRepository.save(post);
     }
 
     // 댓글 수정
@@ -73,9 +77,11 @@ public class CommentService {
     }
 
     // 댓글 삭제
-    public void deleteComment(Long id) {
-        PostComment comment = commentRepository.findById(id)
+    public void deleteComment(Long postId, Long commentId) {
+        PostComment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new APIException(ErrorCode.COMMENT_NOT_FOUND));
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new APIException(ErrorCode.POST_NOT_FOUND));
 
         //자신의 댓글만 삭제 가능
         User user = getCurrentUser();
@@ -84,6 +90,10 @@ public class CommentService {
         }
 
         commentRepository.delete(comment);
+
+        // 댓글 삭제 시 게시글 commentCount-
+        post.decreaseCommentCount();
+        postRepository.save(post);
     }
 
 }

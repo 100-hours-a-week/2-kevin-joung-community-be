@@ -59,8 +59,11 @@ public class CommentController {
 
     // 댓글 삭제 API
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<BaseResponse<Void>> deleteComment(@PathVariable Long commentId) {
-        commentService.deleteComment(commentId);
+    public ResponseEntity<BaseResponse<Void>> deleteComment(
+            @PathVariable Long postId,
+            @PathVariable Long commentId
+    ) {
+        commentService.deleteComment(postId, commentId);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(BaseResponse.of("댓글 삭제 성공"));
