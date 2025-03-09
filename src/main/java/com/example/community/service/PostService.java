@@ -40,6 +40,20 @@ public class PostService {
                 .build();
     }
 
+    // 게시글 조회
+    public PostResponse getPost(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new APIException(ErrorCode.POST_NOT_FOUND));
+
+        post.incViewCount();
+        postRepository.save(post);
+
+        return PostResponse.fromEntity(
+                post,
+                getCurrentUser().getId()
+        );
+    }
+
     // 게시글 작성
     public void createPost(PostFormRequest request) {
         User user = getCurrentUser();

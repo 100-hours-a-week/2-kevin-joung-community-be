@@ -31,6 +31,19 @@ public class PostController {
                 .body(response);
     }
 
+    // 게시물 단건 조회 API
+    @GetMapping("/{id}")
+    public ResponseEntity<BaseResponse<PostResponse>> getPost(@PathVariable Long id) {
+        BaseResponse<PostResponse> response = BaseResponse.of(
+                "조회 성공",
+                postService.getPost(id)
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+    }
+
     // 게시물 작성 API
     @PostMapping("")
     public ResponseEntity<BaseResponse<Void>> createPost(@RequestBody PostFormRequest request) {
