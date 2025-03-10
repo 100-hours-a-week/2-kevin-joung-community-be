@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -57,8 +56,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String newAccessToken = jwtUtil.generateAccessToken(userId);
             String newRefreshToken = jwtUtil.generateRefreshToken(userId);
 
-            response.addCookie(jwtUtil.createTokenCookie("accessToken", newAccessToken, JwtUtil.getAccessExpirationTime()));
-            response.addCookie(jwtUtil.createTokenCookie("refreshToken", newRefreshToken, JwtUtil.getRefreshExpirationTime()));
+            jwtUtil.addTokenCookie(response, "accessToken", newAccessToken, JwtUtil.getAccessExpirationTime());
+            jwtUtil.addTokenCookie(response, "refreshToken", newRefreshToken, JwtUtil.getRefreshExpirationTime());
 
             authenticateUser(newAccessToken, request);
         } else {

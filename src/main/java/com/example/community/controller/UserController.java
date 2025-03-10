@@ -32,8 +32,8 @@ public class UserController {
     public ResponseEntity<BaseResponse<Void>> login(@RequestBody UserLoginRequest request, HttpServletResponse response) {
         TokenResponse tokens = userService.login(request);
 
-        response.addCookie(jwtUtil.createTokenCookie("accessToken", tokens.getAccessToken(), JwtUtil.getAccessExpirationTime()));
-        response.addCookie(jwtUtil.createTokenCookie("refreshToken", tokens.getRefreshToken(), JwtUtil.getRefreshExpirationTime()));
+        jwtUtil.addTokenCookie(response,"accessToken", tokens.getAccessToken(), JwtUtil.getAccessExpirationTime());
+        jwtUtil.addTokenCookie(response,"refreshToken", tokens.getRefreshToken(), JwtUtil.getRefreshExpirationTime());
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -43,8 +43,8 @@ public class UserController {
     // 로그아웃 API
     @DeleteMapping("/token")
     public ResponseEntity<BaseResponse<Void>> logout(HttpServletResponse response) {
-        response.addCookie(jwtUtil.deleteTokenCookie("accessToken"));
-        response.addCookie(jwtUtil.deleteTokenCookie("refreshToken"));
+        jwtUtil.deleteTokenCookie(response,"accessToken");
+        jwtUtil.deleteTokenCookie(response, "refreshToken");
 
         return ResponseEntity
                 .status(HttpStatus.OK)

@@ -4,8 +4,10 @@ import com.example.community.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -87,22 +89,28 @@ public class JwtUtil {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
-    // 쿠키 생성
-    public Cookie createTokenCookie(String name, String token, int maxAge) {
-        Cookie cookie = new Cookie(name, token);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(false);
-        cookie.setPath("/");
-        cookie.setMaxAge(maxAge);
-        return cookie;
+
+    // 토큰 쿠키 추가
+    public void addTokenCookie(HttpServletResponse response, String name, String token, int maxAge) {
+        ResponseCookie cookie = ResponseCookie.from(name, token)
+                .path("/")
+                .sameSite("None")
+                .secure(true)
+                .httpOnly(true)
+                .maxAge(maxAge)
+                .build();
+        response.addHeader("Set-Cookie", cookie.toString());
     }
-    // 쿠키 제거
-    public Cookie deleteTokenCookie(String name) {
-        Cookie cookie = new Cookie(name, null);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(false);
-        cookie.setPath("/");
-        cookie.setMaxAge(0); // 즉시 만료
-        return cookie;
+
+    // 토큰 쿠키 삭제
+    public void deleteTokenCookie(HttpServletResponse response, String name) {
+        ResponseCookie cookie = ResponseCookie.from(name, "")
+                .path("/")
+                .sameSite("None")
+                .secure(true)
+                .httpOnly(true)
+                .maxAge(0)
+                .build();
+        response.addHeader("Set-Cookie", cookie.toString());
     }
 }
