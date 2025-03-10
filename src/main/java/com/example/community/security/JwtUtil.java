@@ -91,7 +91,7 @@ public class JwtUtil {
     public Cookie createTokenCookie(String name, String token, int maxAge) {
         Cookie cookie = new Cookie(name, token);
         cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+        cookie.setSecure(false);
         cookie.setPath("/");
         cookie.setMaxAge(maxAge);
         return cookie;
@@ -100,7 +100,7 @@ public class JwtUtil {
     public Cookie deleteTokenCookie(String name) {
         Cookie cookie = new Cookie(name, null);
         cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+        cookie.setSecure(false);
         cookie.setPath("/");
         cookie.setMaxAge(0); // 즉시 만료
         return cookie;
