@@ -1,5 +1,6 @@
 package com.example.community.service;
 
+import com.example.community.dto.post.PostDetailResponse;
 import com.example.community.dto.post.PostFormRequest;
 import com.example.community.dto.post.PostListResponse;
 import com.example.community.dto.post.PostResponse;
@@ -41,16 +42,18 @@ public class PostService {
     }
 
     // 게시글 조회
-    public PostResponse getPost(Long id) {
+    public PostDetailResponse getPost(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new APIException(ErrorCode.POST_NOT_FOUND));
-
+        User currentUser = getCurrentUser();
         post.incViewCount();
         postRepository.save(post);
+        Optional<PostLike> postLike = likeRepository.findByPostAndUser(post, currentUser);
 
-        return PostResponse.fromEntity(
+        return PostDetailResponse.fromEntity(
                 post,
-                getCurrentUser().getId()
+                currentUser.getId(),
+                postLike.isPresent()
         );
     }
 

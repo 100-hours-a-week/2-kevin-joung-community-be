@@ -1,6 +1,7 @@
 package com.example.community.controller;
 
 import com.example.community.dto.BaseResponse;
+import com.example.community.dto.post.PostDetailResponse;
 import com.example.community.dto.post.PostFormRequest;
 import com.example.community.dto.post.PostListResponse;
 import com.example.community.dto.post.PostResponse;
@@ -33,8 +34,8 @@ public class PostController {
 
     // 게시물 단건 조회 API
     @GetMapping("/{id}")
-    public ResponseEntity<BaseResponse<PostResponse>> getPost(@PathVariable Long id) {
-        BaseResponse<PostResponse> response = BaseResponse.of(
+    public ResponseEntity<BaseResponse<PostDetailResponse>> getPost(@PathVariable Long id) {
+        BaseResponse<PostDetailResponse> response = BaseResponse.of(
                 "조회 성공",
                 postService.getPost(id)
         );
