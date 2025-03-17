@@ -5,7 +5,7 @@ import lombok.*;
 
 
 @Entity
-@Table(name = "post")  // 테이블명 명시
+@Table(name = "posts")  // 테이블명 명시
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor

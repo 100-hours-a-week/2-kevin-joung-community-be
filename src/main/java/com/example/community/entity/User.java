@@ -6,7 +6,7 @@ import lombok.*;
 
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -27,7 +27,7 @@ public class User extends BaseEntity {
     @Column(nullable = false, length = 10)
     private String nickname;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(name = "profile_image_url", nullable = false, columnDefinition = "TEXT")
     private String profileImageUrl;
 }
 
