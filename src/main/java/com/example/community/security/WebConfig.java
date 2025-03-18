@@ -10,7 +10,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOrigins("http://127.0.0.1:54688", "http://localhost:54688", "https://moose-aware-wrongly.ngrok-free.app")
+                .allowedOrigins("https://vocal-sable-a0f899.netlify.app", "https://127.0.0.1:3001")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("Origin", "X-Requested-With", "Content-Type", "Accept")
                 .allowCredentials(true); // 쿠키 포함 허용
